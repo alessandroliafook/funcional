@@ -66,3 +66,16 @@ coprimo x y = (mdc x y) == 1
 - Calcula a conjectura de Goldbach, que diz que um numero par maior que 2 pode ser escrito como a soma de dois numeros primos. Ex: 28 = 5 + 23.
 -}
 goldbach x = [ (y,z)| y <- filter isPrime [1..(x-1)], z <- filter isPrime [1..(x-1)], y + z == x ]
+
+-- tests
+
+    main = do putStrLn "What is 5! ?"
+              x <- readLn
+              if x == fatorial 5
+                  then putStrLn "You're right!"
+                  else putStrLn "You're wrong!"
+              
+              y <- readLn
+              z <- readLn
+
+              print (goldbach y)
