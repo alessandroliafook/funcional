@@ -130,6 +130,7 @@ main = do
         print (penultimo lista)
         print (elementAt 2 lista)
         print (meuLength lista)
+        print (meuReverso lista)
         print (compress [2,5,8,2,1,8])
         print (compact [2,5,8,2,1,8])
         print (encode [2,5,8,2,1,8])
