@@ -3,6 +3,7 @@ package adt.heap;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
  
 import java.util.Arrays;
@@ -43,43 +44,51 @@ public class StudentMinHeapTest {
         heap.insert(8);
         heap.insert(12);
         heap.insert(-2);
+        assertEquals(new Integer(-2), heap.rootElement());
         heap.insert(7);
         heap.insert(8);
         heap.insert(-5);
+        assertEquals(new Integer(-5), heap.rootElement());
         heap.insert(14);
         heap.insert(3);
         heap.insert(-10);
+        assertEquals(new Integer(-10), heap.rootElement());
         heap.insert(0);
  
         assertEquals(10, heap.size());
         assertFalse(heap.isEmpty());
  
         verifyHeap(new Integer[] { -10, -5, -2, 3, 0, 8, 14, 12, 7, 8 });
+        assertEquals(new Integer(-10), heap.extractRootElement());
+        assertEquals(new Integer(-5), heap.rootElement());
     }
  
     @Test
     public void testRemove() {
         heap.insert(22);
         heap.insert(45);
-        heap.insert(38);
+        heap.insert(-38);
         heap.insert(17);
+        assertEquals(new Integer(-38), heap.rootElement());
         heap.insert(40);
-        heap.insert(15);
+        heap.insert(-150);
         heap.insert(26);
+        assertEquals(new Integer(-150), heap.rootElement());
         heap.insert(79);
         heap.insert(53);
         heap.insert(30);
  
-        assertEquals(new Integer(15), heap.extractRootElement());
+        assertEquals(new Integer(-150), heap.extractRootElement());
+        assertEquals(new Integer(-38), heap.extractRootElement());
         assertEquals(new Integer(17), heap.extractRootElement());
         assertEquals(new Integer(22), heap.extractRootElement());
-        assertEquals(new Integer(26), heap.extractRootElement());
-        assertEquals(new Integer(30), heap.extractRootElement());
  
-        assertEquals(5, heap.size());
+        assertEquals(6, heap.size());
         assertFalse(heap.isEmpty());
  
-        verifyHeap(new Integer[] { 38, 40, 79, 45, 53 });
+        assertEquals(new Integer(26), heap.rootElement());
+        
+        verifyHeap(new Integer[] {  40, 79, 45, 53,26,30 });
     }
  
     @Test
@@ -91,9 +100,12 @@ public class StudentMinHeapTest {
         heap.insert(10);
         heap.insert(20);
         heap.insert(-1);
-        heap.insert(-2);
+        heap.insert(-200);
+        assertEquals(new Integer(-200), heap.rootElement());
         heap.insert(Integer.MAX_VALUE);
         heap.insert(Integer.MIN_VALUE);
+        assertEquals(new Integer (Integer.MIN_VALUE), heap.rootElement());
+        assertNotEquals(new Integer (Integer.MAX_VALUE), heap.rootElement());
         heap.insert(1);
         heap.insert(0);
         heap.insert(0);
@@ -104,12 +116,12 @@ public class StudentMinHeapTest {
  
         assertFalse(heap.isEmpty());
         assertEquals(14, heap.size());
-        verifyHeap(new Integer[]{Integer.MIN_VALUE, -1, -2, 0, 0, 100, 20, 10, 1, 0, 12, Integer.MAX_VALUE, 109, 101});
+        verifyHeap(new Integer[]{Integer.MIN_VALUE, -1, -200, 0, 0, 100, 20, 10, 1, 0, 12, Integer.MAX_VALUE, 109, 101});
  
-        Integer[] array = new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -2, 0, 10, 20, Integer.MIN_VALUE};
+        Integer[] array = new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -200, 0, 10, 20, Integer.MIN_VALUE};
         Arrays.sort(array);
  
-        assertArrayEquals(array, heap.heapsort(new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -2, 0, 10, 20, Integer.MIN_VALUE}));
+        assertArrayEquals(array, heap.heapsort(new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -200, 0, 10, 20, Integer.MIN_VALUE}));
         assertTrue(heap.isEmpty());
         verifyHeap(new Integer[]{});
  
@@ -122,8 +134,11 @@ public class StudentMinHeapTest {
         heap.insert(20);
         heap.insert(-1);
         heap.insert(-2);
+        assertEquals(new Integer(-2), heap.rootElement());
         heap.insert(Integer.MAX_VALUE);
         heap.insert(Integer.MIN_VALUE);
+        assertEquals(new Integer (Integer.MIN_VALUE), heap.rootElement());
+        assertNotEquals(new Integer (Integer.MAX_VALUE), heap.rootElement());
         heap.insert(1);
         heap.insert(0);
         heap.insert(0);

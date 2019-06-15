@@ -3,6 +3,7 @@ package adt.heap;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -37,6 +38,9 @@ public class StudentMaxHeapTest {
 		assertFalse(heap.isEmpty());
 
 		verifyHeap(new Integer[] { 99, 12, 82, 6, 34, 64, 58, 1 });
+		
+		assertEquals(new Integer(99), heap.extractRootElement());
+		assertEquals(new Integer(82), heap.rootElement());
 	}
 
 	@Test
@@ -45,13 +49,22 @@ public class StudentMaxHeapTest {
 		assertEquals(0, heap.size());
 		assertTrue(heap.isEmpty());
 		
-		Integer[] list = new Integer[] { 8, 12, -2, 7, 8, -5, 14, 3, -10, 0 }; 
+		Integer[] list = new Integer[] { 8, 12, -2, 7, 8, -5}; 
+		Integer[] list2 = new Integer[] { 14, 3, -10, 0 };
 		
 		for (int i = 0; i < list.length; i++){
 			assertEquals(i, heap.size());
 			heap.insert(list[i]);
 			assertEquals(i + 1, heap.size());
 		}
+		assertEquals(new Integer(12), heap.rootElement());
+		
+		for (int i = 0; i < list2.length; i++){
+			assertEquals(i + 6, heap.size());
+			heap.insert(list2[i]);
+			assertEquals(i + 7, heap.size());
+		}
+		assertEquals(new Integer(14), heap.rootElement());
 
 		assertEquals(10, heap.size());
 		assertFalse(heap.isEmpty());
@@ -64,11 +77,26 @@ public class StudentMaxHeapTest {
 		heap.insert(22);
 		heap.insert(45);
 		heap.insert(38);
+		assertEquals(new Integer(45), heap.rootElement());
 		heap.insert(17);
 		heap.insert(40);
-		heap.insert(15);
+		verifyHeap(new Integer[] { 22, 45,17,40, 38 });
+		heap.insert(100);
+		assertEquals(new Integer(100), heap.rootElement());
+		
+		assertArrayEquals(new Integer[] { 17, 22,38, 40,45, 100 },
+				heap.heapsort(new Integer[] { 100, 22, 45,17,40, 38 }));
+		
+		assertTrue( heap.isEmpty());
+		verifyHeap(new Integer[]{});
+		heap.buildHeap(new Integer[] { 100, 22, 45,17,40, 38 });
+		
 		heap.insert(26);
 		heap.insert(79);
+		verifyHeap(new Integer[] { 22, 45,17,40, 38,100,79,26 });
+		assertEquals(new Integer(100), heap.extractRootElement());
+		verifyHeap(new Integer[] { 22, 45,17,40, 38, 79,26 });
+		assertEquals(new Integer(79), heap.rootElement());
 		heap.insert(53);
 		heap.insert(30);
 
@@ -76,12 +104,12 @@ public class StudentMaxHeapTest {
 		assertEquals(new Integer(53), heap.extractRootElement());
 		assertEquals(new Integer(45), heap.extractRootElement());
 		assertEquals(new Integer(40), heap.extractRootElement());
-		assertEquals(new Integer(38), heap.extractRootElement());
 
 		assertEquals(5, heap.size());
 		assertFalse(heap.isEmpty());
 
-		verifyHeap(new Integer[] { 22, 17, 15, 26, 30 });
+		verifyHeap(new Integer[] { 22, 17, 26, 30, 38 });
+		 
 	}
 
 	@Test
@@ -117,5 +145,153 @@ public class StudentMaxHeapTest {
 
 		assertTrue(isHeap);
 	}
+	
+    @Test
+    public void testShortestPath(){
+ 
+        int INF = 10233912;
+
+        Heap<Pair> pq = new HeapImpl<>(new Comparator<Pair>() {
+            @Override
+            public int compare(Pair o1, Pair o2) {
+                return o2.compareTo(o1);
+            }
+        });
+ 
+        int[][] graph = new int[][]{{0,5,28,0,0,3,0},{0,0,0,7,11,0,0}, {15,0,0,0,0,0,19},{0,0,0,0,0,0,30},
+                {9,0,0,0,0,2,0}, {0,0,0,0,0,0,91}, {0,0,0,0,0,7,0}};
+        int[] dist = new int[]{INF,INF,INF,INF,INF,INF,INF};
+        int numberOfVertices = 7;
+ 
+        int start = 0;
+        int end = 6;
+        int ans = 42;
+ 
+        pq.insert(new Pair(0,0));
+        dist[start] = 0;
+ 
+        while(!pq.isEmpty()){
+ 
+ 
+            int vertex = pq.rootElement().left;
+            int distSoFar = pq.rootElement().right;
+            pq.extractRootElement();
+ 
+            for(int i = 0 ; i < numberOfVertices ; i++){
+ 
+                if(graph[vertex][i] == 0) continue;
+ 
+                if(distSoFar + graph[vertex][i] < dist[i]) {
+                    dist[i] = distSoFar + graph[vertex][i];
+                    pq.insert(new Pair(i, dist[i]));
+                }
+ 
+            }
+ 
+        }
+ 
+        assertEquals(ans, dist[end]);
+    }
+ 
+    static class Pair implements Comparable<Pair>{
+        public int left;
+        public int right;
+        public Pair(int a, int b){
+            left = a;
+            right = b;
+        }
+        @Override
+        public boolean equals(Object other){
+            if(other instanceof Pair){
+                return ((Pair) other).left == this.left && ((Pair) other).right == this.right;
+            }
+            return false;
+        }
+ 
+        @Override
+        public int compareTo(Pair other) {
+            if (other.left == this.left)
+                if (other.right == this.right) return 0;
+                else if (this.right > other.right) return 1;
+                else return -1;
+ 
+            if (this.left > other.left) return 1;
+            else return -1;
+        }
+    }
+    
+    @Test
+    public void testCustom() {
+        assertTrue(heap.isEmpty());
+        assertEquals(0, heap.size());
+ 
+        heap.insert(0);
+        heap.insert(10);
+        heap.insert(20);
+        heap.insert(-1);
+        heap.insert(-2);
+        assertEquals(new Integer(20), heap.rootElement());
+        heap.insert(Integer.MAX_VALUE);
+        heap.insert(Integer.MIN_VALUE);
+        assertNotEquals(new Integer (Integer.MIN_VALUE), heap.rootElement());
+        assertEquals(new Integer (Integer.MAX_VALUE), heap.rootElement());
+        heap.insert(1);
+        heap.insert(0);
+        heap.insert(0);
+        heap.insert(12);
+        heap.insert(100);
+        heap.insert(109);
+        heap.insert(101);
+ 
+        assertFalse(heap.isEmpty());
+        assertEquals(14, heap.size());
+        verifyHeap(new Integer[]{Integer.MIN_VALUE, -1, -2, 0, 0, 100, 20, 10, 1, 0, 12, Integer.MAX_VALUE, 109, 101});
+ 
+        Integer[] array = new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -2, 0, 10, 20, Integer.MIN_VALUE};
+        Arrays.sort(array);
+ 
+        assertArrayEquals(array, heap.heapsort(new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -2, 0, 10, 20, Integer.MIN_VALUE}));
+        assertTrue(heap.isEmpty());
+        verifyHeap(new Integer[]{});
+ 
+        assertArrayEquals(new Integer[]{1, 2, 3, 4}, heap.heapsort(new Integer[]{4, 2, 3, 1}));
+        assertTrue(heap.isEmpty());
+        verifyHeap(new Integer[]{});
+ 
+        heap.insert(0);
+        heap.insert(10);
+        heap.insert(20);
+        heap.insert(-1);
+        heap.insert(-2);
+        assertEquals(new Integer(20), heap.rootElement());
+        heap.insert(Integer.MAX_VALUE);
+        heap.insert(Integer.MIN_VALUE);
+        assertNotEquals(new Integer (Integer.MIN_VALUE), heap.rootElement());
+        assertEquals(new Integer (Integer.MAX_VALUE), heap.rootElement());
+        heap.insert(1);
+        heap.insert(0);
+        heap.insert(0);
+        heap.insert(12);
+        heap.insert(100);
+        heap.insert(109);
+        heap.insert(101);
+        heap.insert(null);
+        assertEquals(14, heap.size());
+        heap.insert(null);
+        assertEquals(14, heap.size());
+ 
+        Comparator<Integer> comparator = new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        };
+ 
+        ((HeapImpl)heap).setComparator(comparator);
+ 
+        assertFalse(heap.isEmpty());
+        assertEquals(14, heap.size());
+        verifyHeap(new Integer[]{Integer.MAX_VALUE, 12, 109, 0, 1, 100, 101, -1, 0, -2, 0, 10, 20, Integer.MIN_VALUE});
+    }
 
 }
