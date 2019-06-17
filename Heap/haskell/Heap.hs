@@ -7,6 +7,8 @@ module Heap (
     toList,
     heapSort,
     size,
+    height,
+    isHeap,
     value,
     left,
     right
@@ -96,3 +98,12 @@ heapSort list = toList (_fromList list NIL)
 
 size NIL = 0
 size (Node _ left right _) = 1 + size left + size right
+
+height NIL = 0
+height (Node _ left right _) = max (1 + height left) (1 + height right)
+
+isHeap NIL = True
+isHeap (Node _ NIL NIL _) = True
+isHeap (Node key left NIL _) = (key <= (value left)) && (isHeap left)
+isHeap (Node key NIL right _) = (key <= (value right)) && (isHeap right)
+isHeap (Node key left right _) = isHeap (Node key left NIL False) && isHeap (Node key NIL right False)
