@@ -16,10 +16,10 @@ prop_sorted xs = sorted (heapSort xs)
 prop_idempotent xs = heapSort (heapSort xs) == heapSort xs
 
 isHeap NIL = True
-isHeap (Node key NIL NIL _) = True
-isHeap (Node key left NIL _) = (key < (value left)) && (isHeap left)
-isHeap (Node key NIL right _) = (key < (value right)) && (isHeap right)
-isHeap (Node key left right _) = (key < (value left)) && (key < (value right)) && (isHeap left) && (isHeap right)
+isHeap (Node _ NIL NIL _) = True
+isHeap (Node key left NIL _) = (key <= (value left)) && (isHeap left)
+isHeap (Node key NIL right _) = (key <= (value right)) && (isHeap right)
+isHeap (Node key left right _) = (key <= (value left)) && (key <= (value right)) && (isHeap left) && (isHeap right)
 
 prop_key xs = isHeap (fromList xs)
 
