@@ -3,6 +3,10 @@ module Heap (
     insert,
     removeRoot,
     getRoot,
+    fromList,
+    toList,
+    heapSort,
+    size,
     value,
     left,
     right
@@ -79,3 +83,16 @@ removeRoot root
         new_root = rollback root
 
 getRoot heap = value heap
+
+toList NIL = []
+toList heap = (getRoot heap) : (toList (removeRoot heap))
+
+_fromList [] heap = heap
+_fromList (x:xs) heap = _fromList xs (insert heap x)
+
+fromList xs = _fromList xs NIL
+
+heapSort list = toList (_fromList list NIL)
+
+size NIL = 0
+size (Node _ left right _) = 1 + size left + size right
