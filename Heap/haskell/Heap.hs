@@ -65,13 +65,13 @@ forwardHeapify (Node key left right last_put)
         \(Node c_key c_left c_right c_last_put) ->
             if c_key < key
                 then (Node c_key (forwardHeapify (Node key c_left c_right c_last_put)) right last_put)
-                else (Node key (forwardHeapify (Node c_key c_left c_right c_last_put)) right last_put)
+                else (Node key (Node c_key c_left c_right c_last_put) right last_put)
         ) child
     | otherwise = (
         \(Node c_key c_left c_right c_last_put) ->
             if c_key < key
                 then (Node c_key left (forwardHeapify (Node key c_left c_right c_last_put)) last_put)
-                else (Node key left (forwardHeapify (Node c_key c_left c_right c_last_put)) last_put)
+                else (Node key left (Node c_key c_left c_right c_last_put) last_put)
         ) child
     where
         child = getBestChild left right

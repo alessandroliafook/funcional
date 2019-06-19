@@ -24,6 +24,6 @@ prop_height xs = not (null xs) ==> let heap = fromList xs in floor (logBase 2 (s
 
 main :: IO ()
 main = do 
-    let tests = [ quickCheckResult (prop_sorted :: [Integer] -> Bool), quickCheckResult (prop_idempotent :: [Integer] -> Bool),quickCheckResult (prop_key :: [Integer] -> Bool), quickCheckResult (prop_insert :: [Integer] -> Integer -> Bool), quickCheckResult (prop_remove :: [Integer] -> Bool), quickCheckResult (prop_height :: [Integer] -> Property)]
+    let tests = [ verboseCheckResult (prop_sorted :: [Integer] -> Bool), verboseCheckResult (prop_idempotent :: [Integer] -> Bool), verboseCheckResult (prop_key :: [Integer] -> Bool), verboseCheckResult (prop_insert :: [Integer] -> Integer -> Bool), verboseCheckResult (prop_remove :: [Integer] -> Bool), verboseCheckResult (prop_height :: [Integer] -> Property)]
     success <- fmap (all isSuccess) . sequence $ tests
     when (not success) $ exitFailure
