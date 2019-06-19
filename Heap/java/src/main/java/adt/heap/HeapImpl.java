@@ -2,6 +2,7 @@ package adt.heap;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.IntFunction;
 
 import util.Util;
 
@@ -37,27 +38,6 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 		this.comparator = comparator;
 	}
 
-	// /////////////////// METODOS IMPLEMENTADOS
-	private int parent(int i) {
-		return (i - 1) / 2;
-	}
-
-	/**
-	 * Deve retornar o indice que representa o filho a esquerda do elemento
-	 * indexado pela posicao i no vetor
-	 */
-	private int left(int i) {
-		return (i * 2 + 1);
-	}
-
-	/**
-	 * Deve retornar o indice que representa o filho a direita do elemento
-	 * indexado pela posicao i no vetor
-	 */
-	private int right(int i) {
-		return (i * 2 + 1) + 1;
-	}
-
 	@Override
 	public boolean isEmpty() {
 		return (index == -1);
@@ -65,15 +45,9 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 
 	@Override
 	public T[] toArray() {
-		@SuppressWarnings("unchecked")
-		T[] resp = (T[]) new Comparable[size()];
-		for (int i = 0; i <= index; i++) {
-			resp[i] = this.heap[i];
-		}
-		return resp;
+		return Arrays.copyOf(this.heap, this.size());
 	}
 
-	// ///////////// METODOS A IMPLEMENTAR
 	/**
 	 * Valida o invariante de uma heap a partir de determinada posicao, que pode
 	 * ser a raiz da heap ou de uma sub-heap. O heapify deve colocar os maiores
@@ -81,16 +55,21 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 	 */
 	private void heapify(int position) {
 
+		IntFunction left2 = (n) -> n * 2 + 1;
+		IntFunction right2 = (n) -> n * 2 + 2;
+
 		if (position >= index)
 			return;
 
 		int max = position;
+		int leftPos = Integer.valueOf(left2.apply(position).toString());
+		int rightPos = Integer.valueOf(right2.apply(position).toString());
 
-		if (left(position) <= index && comparator.compare(this.heap[position], this.heap[left(position)]) < 0)
-			max = left(position);
+		if (leftPos <= index && comparator.compare(this.heap[max], this.heap[leftPos]) < 0)
+			max = leftPos;
 
-		if (right(position) <= index && comparator.compare(this.heap[max], this.heap[right(position)]) < 0)
-			max = right(position);
+		if (rightPos <= index && comparator.compare(this.heap[max], this.heap[rightPos]) < 0)
+			max = rightPos;
 
 		if (max != position) {
 			Util.swap(heap, position, max);
@@ -103,9 +82,6 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 		// ESSE CODIGO E PARA A HEAP CRESCER SE FOR PRECISO. NAO MODIFIQUE
 		if (index == heap.length - 1)
 			heap = Arrays.copyOf(heap, heap.length + INCREASING_FACTOR);
-
-		// /////////////////////////////////////////////////////////////////
-		// TODO Implemente a insercao na heap aqui.
 
 		else if (element == null)
 			return;
@@ -120,12 +96,14 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 	public void upHeap(int position) {
 
 		if (position > 0) {
-			int parent = parent(position);
 
-			if (comparator.compare(this.heap[position], this.heap[parent]) > 0) {
-				Util.swap(heap, position, parent);
+			IntFunction parent = (n) -> (n - 1) / 2;
+			int parentPos = Integer.valueOf(parent.apply(position).toString());
+
+			if (comparator.compare(this.heap[position], this.heap[parentPos]) > 0) {
+				Util.swap(heap, position, parentPos);
 				heapify(position);
-				upHeap(parent);
+				upHeap(parentPos);
 			}
 		}
 	}
@@ -138,14 +116,12 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 			return;
 
 		this.heap = (T[]) (new Comparable[INITIAL_SIZE]);
-		index = -1;
+		this.index = -1;
 
 		if (array.length != 0) {
 
-			for (int i = 0; i < array.length; i++) {
-				if (array[i] != null)
-					insert(array[i]);
-			}
+			Arrays.asList(array).stream().filter(e -> e != null);
+			Arrays.asList(array).forEach(n -> this.insert(n));
 		}
 	}
 
@@ -191,16 +167,15 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 
 		this.clear();
 
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] != null)
-				this.insert(array[i]);
-		}
+		Arrays.asList(array).stream().filter(e -> e != null);
+		Arrays.asList(array).forEach(n -> this.insert(n));
 
 		T[] result = (T[]) (new Comparable[size()]);
 
 		for (int i = 0; i < result.length; i++) {
 			result[i] = extractRootElement();
 		}
+
 		this.clear();
 		setComparator(atualComparator);
 
