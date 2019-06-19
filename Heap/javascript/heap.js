@@ -1,5 +1,7 @@
 const BinaryHeap = () => [];
 
+const comparator = (a,b) => a > b ? true : false;
+
 const size = heap => heap.length;
 
 const _parent = index => parseInt((index - 1) / 2);
@@ -23,19 +25,18 @@ const swap = (heap, index_1, index_2) => {
 };
 
 const heapify = (heap, index) => {
-   const pseudo_index = size(heap) - 1;
    let newHeap = [...heap];
-   if(index >= pseudo_index){
+   if(index >= size(heap)){
       return newHeap;
    }
 
    let max = index;
 
-   if(left(index) <= pseudo_index && newHeap[index] <= newHeap[left(index)]){
+   if(left(index) < size(heap) && !comparator(newHeap[max], newHeap[left(index)])){
       max = left(index);
    }
 
-   if(right(index) <= pseudo_index && newHeap[index] <= newHeap[right(index)]){
+   if(right(index) < size(heap) && !comparator(newHeap[max], newHeap[right(index)])){
       max = right(index);
    }
 
@@ -56,7 +57,7 @@ const upHeap = (heap, index) => {
    let newHeap = [...heap];
    const parent_index = _parent(index);
 
-   if(heap[index] > heap[parent_index]){
+   if(comparator(heap[index], heap[parent_index])){
       newHeap = swap(newHeap, index, parent_index);
       newHeap = heapify(newHeap, index);
       newHeap = upHeap(newHeap, parent_index);
@@ -81,9 +82,9 @@ const buildHeap = (array) => array.reduce((heap, elem) => {
    }
 
    let newHeap = [...heap];
-   const oldRoot = rootElement(newHeap);
-   newHeap[0] = newHeap[size(newHeap) - 1];
-   newHeap.pop();
+   newHeap[0] = newHeap.pop();
    newHeap = heapify(newHeap, 0);
    return newHeap;
-}
+};
+
+const heapSort = array => (array !== null) ? toArray(buildHeap(array)) : [];
