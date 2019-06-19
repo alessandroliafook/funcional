@@ -4,16 +4,7 @@ class Heap:
 
         self.array = []
         self.comparator = comparator
-
-    def _parent(self, i):
-        return (i - 1) / 2
-    
-    def _left(self, i):
-        return (i * 2) + 1
-    
-    def _right(self, i):
-        return (i * 2) + 2
-    
+        
     def _swap(self, x, y):    
         self.array[x], self.array[y] = self.array[y], self.array[x]
 
@@ -37,13 +28,18 @@ class Heap:
         if position >= self.size():
             return
         
+        rightPos = lambda x : (x * 2) + 2
+        leftPos = lambda x : (x * 2) + 1
+
         max = position
+        right = rightPos(position)
+        left = leftPos(position)
 
-        if(self._left(position) < self.size() and self.comparator(self.array[max], self.array[self._left(position)]) == False):
-            max = self._left(position)
+        if(left < self.size() and self.comparator(self.array[max], self.array[left]) == False):
+            max = left
 
-        if(self._right(position) < self.size() and self.comparator(self.array[max], self.array[self._right(position)]) == False):
-            max = self._right(position)
+        if(right < self.size() and self.comparator(self.array[max], self.array[right]) == False):
+            max = right
 
         if max != position:
             self._swap(position, max)
@@ -61,7 +57,9 @@ class Heap:
 
         if position > 0:
 
-            parent = self._parent(position)
+            parentPos = lambda x : (x - 1) / 2
+
+            parent = parentPos(position)
 
             if self.comparator(self.array[position], self.array[parent]) == True:
 
